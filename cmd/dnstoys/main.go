@@ -25,6 +25,7 @@ import (
 	"github.com/knadh/dns.toys/internal/services/units"
 	"github.com/knadh/dns.toys/internal/services/uuid"
 	"github.com/knadh/dns.toys/internal/services/weather"
+	"github.com/knadh/dns.toys/internal/services/ifsc"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/toml"
 	"github.com/knadh/koanf/providers/file"
@@ -330,6 +331,14 @@ func main() {
 		h.register("sudoku", ssolver, mux)
 		// enter the sudoku puzzle string in row major format, each row separated by a dot, empty cells should have value 0
 		help = append(help, []string{"solve a sudoku puzzle", "dig 002840003.076000000.100006050.030080000.007503200.000020010.080100004.000000730.700064500.sudoku @%s"})
+	}
+
+	// IFSC lookup
+	if ko.Bool("ifsc.enabled") {
+    	i := ifsc.New()
+    	h.register("ifsc", i, mux)
+		// enter the IFSC code
+    	help = append(help, []string{"lookup bank details for IFSC code", "dig YESB0DNB002.ifsc @%s"})
 	}
 
 	// Prepare the static help response for the `help` query.
